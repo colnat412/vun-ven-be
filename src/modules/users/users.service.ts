@@ -1,22 +1,22 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>,
   ) {}
 
   async create(
-    displayName: string,
+    name: string,
     email: string,
-    passwordHash: string,
-  ): Promise<User> {
+    password: string,
+  ): Promise<UserEntity> {
     try {
-      const user = this.users.create({ displayName, email, passwordHash });
-      await this.users.save(user);
+      const user = this.userRepo.create({ name, email, password });
+      await this.userRepo.save(user);
       return user;
     } catch (error) {
       if (
@@ -29,14 +29,14 @@ export class UsersService {
     }
   }
 
-  findById(id: string): Promise<User | null> {
-    return this.users.findOneBy({ id });
+  findById(id: string): Promise<UserEntity | null> {
+    return this.userRepo.findOneBy({ id });
   }
 
-  findByEmailForAuth(email: string): Promise<User | null> {
-    return this.users
+  findByEmailForAuth(email: string): Promise<UserEntity | null> {
+    return this.userRepo
       .createQueryBuilder('user')
-      .addSelect('user.passwordHash')
+      .addSelect('user.password')
       .where('user.email = :email', { email })
       .getOne();
   }

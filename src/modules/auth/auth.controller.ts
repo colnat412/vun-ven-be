@@ -1,3 +1,4 @@
+import { BaseResponse } from '../../common/dto/base-response.dto';
 import {
   Body,
   Controller,
@@ -19,19 +20,19 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  register(@Body() dto: RegisterDto) {
-    return this.auth.register(dto);
+  async register(@Body() dto: RegisterDto) {
+    return new BaseResponse(await this.auth.register(dto));
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() dto: LoginDto) {
-    return this.auth.login(dto);
+  async login(@Body() dto: LoginDto) {
+    return new BaseResponse(await this.auth.login(dto));
   }
 
   @Get('me')
   me(@CurrentUser() user: AuthenticatedUser) {
-    return user;
+    return new BaseResponse(user);
   }
 }

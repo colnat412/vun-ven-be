@@ -18,12 +18,12 @@ export class AuthService {
       dto.email,
       await hashPassword(dto.password),
     );
-    return { id: user.id, displayName: user.displayName, email: user.email };
+    return { id: user.id, displayName: user.name, email: user.email };
   }
 
   async login(dto: LoginDto) {
     const user = await this.users.findByEmailForAuth(dto.email);
-    if (!user || !(await verifyPassword(dto.password, user.passwordHash))) {
+    if (!user || !(await verifyPassword(dto.password, user.password))) {
       throw new UnauthorizedException('Email hoặc mật khẩu không đúng.');
     }
     return {

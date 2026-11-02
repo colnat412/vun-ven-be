@@ -1,4 +1,4 @@
-import { plainToInstance } from 'class-transformer';
+import { plainToInstance, Type } from 'class-transformer';
 import {
   IsIn,
   IsInt,
@@ -12,15 +12,15 @@ import {
 
 class Environment {
   @IsIn(['development', 'test', 'production']) NODE_ENV = 'development';
-  @IsInt() @Min(1) @Max(65535) PORT = 3000;
+  @Type(() => Number) @IsInt() @Min(1) @Max(65535) PORT: number = 3000;
   @IsString() @IsNotEmpty() CORS_ORIGIN!: string;
   @IsString() @IsNotEmpty() DB_HOST!: string;
-  @IsInt() @Min(1) @Max(65535) DB_PORT = 3306;
+  @Type(() => Number) @IsInt() @Min(1) @Max(65535) DB_PORT: number = 3306;
   @IsString() @IsNotEmpty() DB_USERNAME!: string;
   @IsString() @IsNotEmpty() DB_PASSWORD!: string;
   @IsString() @IsNotEmpty() DB_NAME!: string;
   @IsString() @MinLength(32) JWT_SECRET!: string;
-  @IsInt() @Min(60) @Max(86400) JWT_EXPIRES_IN_SECONDS = 900;
+  @Type(() => Number) @IsInt() @Min(60) @Max(86400) JWT_EXPIRES_IN_SECONDS: number = 900;
 }
 
 export const validateEnvironment = (
