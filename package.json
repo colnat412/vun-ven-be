@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "nest build",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
     "migration:run": "npm run build && typeorm migration:run -d dist/database/data-source.js",
-    "migration:revert": "npm run build && typeorm migration:revert -d dist/database/data-source.js"
+    "migration:revert": "npm run build && typeorm migration:revert -d dist/database/data-source.js",
+    "test": "npm run build && node --test test/*.test.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.0",

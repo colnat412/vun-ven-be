@@ -24,7 +24,7 @@ export class AuthService {
   async login(dto: LoginDto) {
     const user = await this.users.findByEmailForAuth(dto.email);
     if (!user || !(await verifyPassword(dto.password, user.password))) {
-      throw new UnauthorizedException('Email hoặc mật khẩu không đúng.');
+      throw new UnauthorizedException('Invalid email or password.');
     }
     return {
       accessToken: await this.jwt.signAsync({ sub: user.id }),

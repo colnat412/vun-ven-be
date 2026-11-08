@@ -23,7 +23,7 @@ export class UsersService {
         error instanceof QueryFailedError &&
         (error.driverError as { code?: string }).code === 'ER_DUP_ENTRY'
       ) {
-        throw new ConflictException('Email đã được sử dụng.');
+        throw new ConflictException('Email is already in use.');
       }
       throw error;
     }

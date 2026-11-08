@@ -15,7 +15,8 @@
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
     "sourceMap": true,
-    "incremental": true
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/tsconfig.build.tsbuildinfo"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

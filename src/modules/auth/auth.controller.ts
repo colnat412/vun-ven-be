@@ -21,18 +21,18 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() dto: RegisterDto) {
-    return new BaseResponse(await this.auth.register(dto));
+    return BaseResponse.success(await this.auth.register(dto));
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() dto: LoginDto) {
-    return new BaseResponse(await this.auth.login(dto));
+    return BaseResponse.success(await this.auth.login(dto));
   }
 
   @Get('me')
   me(@CurrentUser() user: AuthenticatedUser) {
-    return new BaseResponse(user);
+    return BaseResponse.success(user);
   }
 }

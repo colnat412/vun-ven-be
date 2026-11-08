@@ -2,11 +2,11 @@ import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'type
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime', precision: 3 })
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'datetime', precision: 3 })
-  updatedAt!: Date;
+  updatedAt: Date;
 }

@@ -12,13 +12,13 @@ export class BooksController {
   @Post()
   async create(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateBookDto) {
     const book = await this.books.create(user.id, dto);
-    return new BaseResponse(book);
+    return BaseResponse.success(book);
   }
 
   @Get()
   async findAll(@CurrentUser() user: AuthenticatedUser) {
     const books = await this.books.findAll(user.id);
-    return new BaseResponse(books);
+    return BaseResponse.success(books);
   }
 
   @Get(':bookId')
@@ -27,6 +27,6 @@ export class BooksController {
     @Param('bookId', new ParseUUIDPipe()) bookId: string,
   ) {
     const book = await this.books.findOne(user.id, bookId);
-    return new BaseResponse(book);
+    return BaseResponse.success(book);
   }
 }

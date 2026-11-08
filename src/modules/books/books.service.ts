@@ -50,7 +50,7 @@ export class BooksService {
 
   async findOwned(ownerId: string, bookId: string): Promise<BookEntity> {
     const book = await this.books.findOneBy({ id: bookId, ownerId });
-    if (!book) throw new NotFoundException('Không tìm thấy sổ.');
+    if (!book) throw new NotFoundException('Book not found.');
     return book;
   }
 

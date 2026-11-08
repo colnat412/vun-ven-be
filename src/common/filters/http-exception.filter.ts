@@ -7,8 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-
-export const GENERAL_ERROR_MESSAGE = 'Đã xảy ra lỗi. Vui lòng thử lại sau.';
+import { BaseResponse } from '../dto/base-response.dto';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -36,10 +35,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    httpAdapter.reply(response, {
-      success: false,
-      message: GENERAL_ERROR_MESSAGE,
-      data: null,
-    }, status);
+    httpAdapter.reply(response, BaseResponse.error(), status);
   }
 }
