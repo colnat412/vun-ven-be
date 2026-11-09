@@ -5,6 +5,8 @@ import { BookEntity } from '../modules/books/entities/book.entity';
 import { CategoryEntity } from '../modules/categories/entities/category.entity';
 import { WalletEntity } from '../modules/wallets/entities/wallet.entity';
 import { DataSourceOptions } from 'typeorm';
+import { MonthlyBudgetEntity } from '../modules/budgets/entities/monthly-budget.entity';
+import { CategoryBudgetEntity } from '../modules/budgets/entities/category-budget.entity';
 
 export const databaseConfig = (env: NodeJS.ProcessEnv): DataSourceOptions => {
   const port = Number(env.DB_PORT || 3306);
@@ -37,6 +39,8 @@ export const databaseConfig = (env: NodeJS.ProcessEnv): DataSourceOptions => {
       WalletEntity,
       TransactionEntity,
       WalletEntryEntity,
+      MonthlyBudgetEntity,
+      CategoryBudgetEntity,
     ],
     synchronize: false,
     migrationsRun: false,

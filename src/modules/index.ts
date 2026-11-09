@@ -3,5 +3,6 @@ import { BooksModule } from './books/books.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
+import { BudgetsModule } from './budgets/budgets.module';
 
-export const AppModules = [UsersModule, AuthModule, BooksModule, TransactionsModule, CategoriesModule];
+export const AppModules = [UsersModule, AuthModule, BooksModule, TransactionsModule, CategoriesModule, BudgetsModule];
