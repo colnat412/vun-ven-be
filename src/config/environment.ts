@@ -21,6 +21,19 @@ class Environment {
   @IsString() @IsNotEmpty() DB_NAME!: string;
   @IsString() @MinLength(32) JWT_SECRET!: string;
   @Type(() => Number) @IsInt() @Min(60) @Max(86400) JWT_EXPIRES_IN_SECONDS: number = 900;
+  @IsString()
+  @IsNotEmpty()
+  GEMINI_API_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  GEMINI_MODEL: string;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1000)
+  @Max(60000)
+  GEMINI_TIMEOUT_MS: number = 15000;
 }
 
 export const validateEnvironment = (

@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -13,6 +14,7 @@ import { AuthenticatedUser } from '../../common/types/authenticated-user';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -34,5 +36,13 @@ export class AuthController {
   @Get('me')
   me(@CurrentUser() user: AuthenticatedUser) {
     return BaseResponse.success(user);
+  }
+
+  @Patch('me')
+  async updateProfile(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    return BaseResponse.success(await this.auth.updateProfile(user.id, dto));
   }
 }

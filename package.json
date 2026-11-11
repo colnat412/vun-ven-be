@@ -11,6 +11,7 @@
     "test": "npm run build && node --test test/*.test.cjs"
   },
   "dependencies": {
+    "@google/genai": "^3.0.0",
     "@nestjs/common": "^11.1.0",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.1.0",

@@ -33,6 +33,11 @@ export class UsersService {
     return this.userRepo.findOneBy({ id });
   }
 
+  async updateName(id: string, name: string): Promise<UserEntity> {
+    await this.userRepo.update({ id }, { name });
+    return this.userRepo.findOneByOrFail({ id });
+  }
+
   findByEmailForAuth(email: string): Promise<UserEntity | null> {
     return this.userRepo
       .createQueryBuilder('user')
