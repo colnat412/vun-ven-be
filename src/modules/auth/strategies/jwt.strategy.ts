@@ -23,6 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (typeof payload.sub !== 'string') throw new UnauthorizedException();
     const user = await this.users.findById(payload.sub);
     if (!user) throw new UnauthorizedException();
-    return { id: user.id, email: user.email, displayName: user.name };
+    return { id: user.id, email: user.email, displayName: user.name, hasAvatar: !!user.avatarPublicId };
   }
 }

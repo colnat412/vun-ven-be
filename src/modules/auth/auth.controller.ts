@@ -15,6 +15,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateAvatarDto } from './dto/update-avatar.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -44,5 +45,15 @@ export class AuthController {
     @Body() dto: UpdateProfileDto,
   ) {
     return BaseResponse.success(await this.auth.updateProfile(user.id, dto));
+  }
+
+  @Get('me/avatar')
+  async avatar(@CurrentUser() user: AuthenticatedUser) {
+    return BaseResponse.success(await this.auth.avatar(user.id));
+  }
+
+  @Patch('me/avatar')
+  async updateAvatar(@CurrentUser() user: AuthenticatedUser, @Body() dto: UpdateAvatarDto) {
+    return BaseResponse.success(await this.auth.updateAvatar(user.id, dto.avatarDataUrl));
   }
 }

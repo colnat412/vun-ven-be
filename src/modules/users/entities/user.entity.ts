@@ -4,6 +4,9 @@ import { BookEntity } from '../../books/entities/book.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
+  @Column({ type: 'varchar', length: 255, name: 'avatar_public_id', nullable: true })
+  avatarPublicId: string | null;
+
   @OneToMany(() => BookEntity, (book) => book.owner)
   books: BookEntity[];
 
