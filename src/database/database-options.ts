@@ -7,6 +7,10 @@ import { WalletEntity } from '../modules/wallets/entities/wallet.entity';
 import { DataSourceOptions } from 'typeorm';
 import { MonthlyBudgetEntity } from '../modules/budgets/entities/monthly-budget.entity';
 import { CategoryBudgetEntity } from '../modules/budgets/entities/category-budget.entity';
+import { TransactionPhotos1794400000000 } from './migrations/1794400000000-TransactionPhotos';
+import { EwalletKind1794401000000 } from './migrations/1794401000000-EwalletKind';
+import { CloudinaryPhotos1794480000000 } from './migrations/1794480000000-CloudinaryPhotos';
+import { PhotoCleanupEntity } from '../modules/media/photo-cleanup.entity';
 
 export const databaseConfig = (env: NodeJS.ProcessEnv): DataSourceOptions => {
   const port = Number(env.DB_PORT || 3306);
@@ -41,8 +45,10 @@ export const databaseConfig = (env: NodeJS.ProcessEnv): DataSourceOptions => {
       WalletEntryEntity,
       MonthlyBudgetEntity,
       CategoryBudgetEntity,
+      PhotoCleanupEntity,
     ],
     synchronize: false,
     migrationsRun: false,
+    migrations: [TransactionPhotos1794400000000, EwalletKind1794401000000, CloudinaryPhotos1794480000000],
   };
 };

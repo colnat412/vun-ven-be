@@ -43,6 +43,10 @@ export const validateEnvironment = (
     enableImplicitConversion: true,
   });
   const errors = validateSync(env, { skipMissingProperties: false });
+  const cloudinaryKeys = ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET'];
+  if (cloudinaryKeys.some(key => !!input[key]) && cloudinaryKeys.some(key => typeof input[key] !== 'string' || !String(input[key]).trim())) {
+    throw new Error('Cloudinary configuration requires CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.');
+  }
   if (errors.length)
     throw new Error(
       `Invalid environment: ${errors.map((error) => error.property).join(', ')}`,

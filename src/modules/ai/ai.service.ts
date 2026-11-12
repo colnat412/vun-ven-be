@@ -21,10 +21,52 @@ export class AiService {
     message: string,
     draft?: TransactionDraftDto,
   ): AiParseResult {
-    return { status: 'needs_input', reason, message, ...(draft ? { draft } : {}) };
+    return {
+      status: 'needs_input',
+      reason,
+      message,
+      ...(draft ? { draft } : {}),
+    };
   }
 
-  async parse(ownerId: string, bookId: string, text: string): Promise<AiParseResult> {
+  async parsePhoto(ownerId: string, bookId: string, photoDataUrl: string) {
+    const book = await this.books.findOne(ownerId, bookId);
+    const categories = book.categories.filter((row) => row.isActive);
+    const wallets = book.wallets.filter((row) => row.isActive);
+    const draft = await this.gemini.parseTransaction(
+      {
+        text: 'Đọc ảnh để tạo một bản nháp thu chi. Không suy đoán số tiền không có trên ảnh.',
+        timezone: book.timezone,
+        receivedAt: new Date().toISOString(),
+        categories: categories.map((row) => ({ id: row.id, name: row.name })),
+        wallets: wallets.map((row) => ({
+          id: row.id,
+          name: row.name,
+          kind: row.kind,
+        })),
+      },
+      photoDataUrl,
+    );
+    return {
+      amountVnd:
+        !draft.hasMultipleTransactions && draft.amountText !== null
+          ? parseMoneyExpression(draft.amountText)
+          : null,
+      kind: ['income', 'expense'].includes(draft.kind) ? draft.kind : null,
+      categoryName: categories.find((row) => row.id === draft.categoryId)?.name ?? null,
+      walletName: wallets.find((row) => row.id === draft.walletId)?.name ?? null,
+      note: draft.note,
+      dateText: draft.dateText,
+      hasMultipleTransactions: draft.hasMultipleTransactions,
+    };
+  }
+
+  async parse(
+    ownerId: string,
+    bookId: string,
+    text: string,
+    walletId?: string,
+  ): Promise<AiParseResult> {
     const receivedAt = new Date();
     // Ownership must be checked before sending any book data to the provider.
     const book = await this.books.findOne(ownerId, bookId);
@@ -33,12 +75,20 @@ export class AiService {
     if (!categories.length || !wallets.length) {
       return this.needsInput('missing_setup', 'Sổ cần có danh mục và ví đang hoạt động.');
     }
+    const selectedWallet = walletId ? wallets.find((row) => row.id === walletId) : undefined;
+    if (walletId && !selectedWallet) {
+      return this.needsInput('invalid_wallet', 'Hãy chọn ngân hàng hoặc ví đang dùng trong sổ.');
+    }
     const draft = await this.gemini.parseTransaction({
       text,
       timezone: book.timezone,
       receivedAt: receivedAt.toISOString(),
       categories: categories.map((row) => ({ id: row.id, name: row.name })),
-      wallets: wallets.map((row) => ({ id: row.id, name: row.name, kind: row.kind })),
+      wallets: wallets.map((row) => ({
+        id: row.id,
+        name: row.name,
+        kind: row.kind,
+      })),
     });
     if (draft.hasMultipleTransactions) {
       return this.needsInput('multiple_transactions', 'Hãy nhập mỗi lần một giao dịch.', draft);
@@ -76,7 +126,7 @@ export class AiService {
         draft,
       );
     }
-    const wallet = wallets.find((row) => row.id === draft.walletId);
+    const wallet = selectedWallet ?? wallets.find((row) => row.id === draft.walletId);
     if (!wallet) {
       return this.needsInput('invalid_wallet', 'Bạn thanh toán hoặc nhận tiền bằng ví nào?', draft);
     }

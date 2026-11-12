@@ -8,7 +8,28 @@ import { WalletEntryEntity } from './wallet-entry.entity';
 @Entity('transactions')
 @Index('uq_transactions_book_id', ['bookId', 'id'], { unique: true })
 @Index('ix_transactions_date', ['bookId', 'occurredOn', 'id'])
+@Index('uq_transactions_client_request', ['bookId', 'clientRequestId'], {
+  unique: true,
+})
 export class TransactionEntity extends BaseEntity {
+  @Column({ name: 'photo_public_id', type: 'varchar', length: 255, nullable: true, select: false })
+  photoPublicId: string | null;
+  @Column({
+    name: 'photo_data_url',
+    type: 'mediumtext',
+    nullable: true,
+    select: false,
+  })
+  photoDataUrl: string | null;
+
+  @Column({
+    name: 'client_request_id',
+    type: 'varchar',
+    length: 36,
+    nullable: true,
+  })
+  clientRequestId: string | null;
+
   @Column({ name: 'book_id', type: 'varchar', length: 36 }) bookId: string;
 
   @ManyToOne(() => BookEntity, (book) => book.transactions, { nullable: false })
@@ -18,7 +39,9 @@ export class TransactionEntity extends BaseEntity {
   })
   book: BookEntity;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.transactions, { nullable: true })
+  @ManyToOne(() => CategoryEntity, (category) => category.transactions, {
+    nullable: true,
+  })
   @JoinColumn([
     {
       name: 'book_id',
@@ -33,13 +56,19 @@ export class TransactionEntity extends BaseEntity {
 
   @OneToMany(() => WalletEntryEntity, (entry) => entry.transaction)
   entries: WalletEntryEntity[];
-  @Column({ name: 'category_id', type: 'varchar', length: 36, nullable: true }) categoryId:
-    string | null;
-  @Column({ type: 'enum', enum: TransactionKindEnum }) kind: TransactionKindEnum;
+  @Column({ name: 'category_id', type: 'varchar', length: 36, nullable: true })
+  categoryId: string | null;
+  @Column({ type: 'enum', enum: TransactionKindEnum })
+  kind: TransactionKindEnum;
   @Column({ name: 'amount_vnd', type: 'bigint' }) amountVnd: string;
   @Column({ type: 'varchar', length: 160, default: '' }) note: string;
   @Column({ name: 'occurred_on', type: 'date' }) occurredOn: string;
-  @Column({ name: 'occurred_at_utc', type: 'datetime', precision: 3, nullable: true })
+  @Column({
+    name: 'occurred_at_utc',
+    type: 'datetime',
+    precision: 3,
+    nullable: true,
+  })
   occurredAt: Date | null;
   @Column({ type: 'int', default: 1 }) version: number;
 }

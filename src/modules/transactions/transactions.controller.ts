@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Header,
+  HttpCode,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AuthenticatedUser } from '../../common/types/authenticated-user';
@@ -10,6 +22,16 @@ import { TransactionsService } from './transactions.service';
 @Controller('books/:bookId/transactions')
 export class TransactionsController {
   constructor(private readonly transactions: TransactionsService) {}
+
+  @Get(':id/photo')
+  @Header('Cache-Control', 'private, no-store')
+  async photo(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('bookId', new ParseUUIDPipe()) bookId: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    return BaseResponse.success(await this.transactions.findPhoto(user.id, bookId, id));
+  }
 
   @Post()
   async create(

@@ -1,9 +1,28 @@
 import { Transform } from 'class-transformer';
-import { IsIn, IsISO8601, IsString, IsUUID, Matches, MaxLength } from 'class-validator';
+import {
+  IsIn,
+  IsISO8601,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Matches,
+  MaxLength,
+  Validate,
+} from 'class-validator';
+import { TransactionPhotoValidator } from '../../../common/validators/transaction-photo.validator';
 import { TransactionKindEnum } from '../../../config/enums/transaction-kind.enum';
 
 export class CreateTransactionDto {
-  @IsIn([TransactionKindEnum.Income, TransactionKindEnum.Expense]) kind!: TransactionKindEnum;
+  @IsOptional()
+  @Validate(TransactionPhotoValidator)
+  photoDataUrl?: string;
+
+  @IsOptional()
+  @IsUUID()
+  clientRequestId?: string;
+
+  @IsIn([TransactionKindEnum.Income, TransactionKindEnum.Expense])
+  kind!: TransactionKindEnum;
   @IsString()
   @Matches(/^(?:[1-9]\d{0,11}|1000000000000)$/)
   amountVnd!: string;
