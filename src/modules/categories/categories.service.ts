@@ -31,6 +31,7 @@ export class CategoriesService {
         sortOrder: 0,
       });
       category.name = dto.name;
+      if (dto.icon !== undefined) category.icon = dto.icon;
       category.isActive = true;
       return manager.save(CategoryEntity, category);
     });

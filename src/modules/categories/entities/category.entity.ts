@@ -27,6 +27,9 @@ export class CategoryEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 120 })
   name: string;
 
+  @Column({ type: 'varchar', length: 64, nullable: true })
+  icon: string | null;
+
   @Column({ name: 'sort_order', type: 'int', default: 0 })
   sortOrder: number;
 

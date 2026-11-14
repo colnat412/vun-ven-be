@@ -28,6 +28,9 @@ export class WalletEntity extends BaseEntity {
   @Column({ type: 'enum', enum: WalletKindEnum })
   kind: WalletKindEnum;
 
+  @Column({ type: 'varchar', length: 64, nullable: true })
+  icon: string | null;
+
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 }

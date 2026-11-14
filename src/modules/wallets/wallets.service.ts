@@ -8,6 +8,7 @@ import { DataSource } from 'typeorm';
 import { BookEntity } from '../books/entities/book.entity';
 import { WalletEntity } from './entities/wallet.entity';
 import { SaveWalletDto } from './dto/save-wallet.dto';
+import { isWalletIcon } from './wallet-icon';
 
 @Injectable()
 export class WalletsService {
@@ -28,7 +29,9 @@ export class WalletsService {
         wallet = existing;
       }
       wallet ??= manager.create(WalletEntity, { bookId });
-      Object.assign(wallet, { name: dto.name, kind: dto.kind, isActive: true });
+      const icon = dto.icon === undefined ? (wallet.icon ?? null) : dto.icon;
+      if (!isWalletIcon(icon, dto.kind)) throw new BadRequestException('Invalid wallet icon.');
+      Object.assign(wallet, { name: dto.name, kind: dto.kind, icon, isActive: true });
       return manager.save(WalletEntity, wallet);
     });
   }

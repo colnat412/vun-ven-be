@@ -212,6 +212,7 @@ export class TransactionsService {
       .addSelect('(tx.photoPublicId IS NOT NULL OR tx.photoDataUrl IS NOT NULL)', 'hasPhoto')
       .addSelect("DATE_FORMAT(tx.occurredOn, '%Y-%m-%d')", 'occurredOn')
       .addSelect('tx.occurredAt', 'occurredAt')
+      .addSelect('tx.createdAt', 'createdAt')
       .addSelect('tx.version', 'version')
       .addSelect('tx.categoryId', 'categoryId')
       .addSelect('category.code', 'categoryCode')
@@ -242,6 +243,7 @@ export class TransactionsService {
     const items = await query
       .orderBy('tx.occurredOn', 'DESC')
       .addOrderBy('tx.occurredAt', 'DESC')
+      .addOrderBy('tx.createdAt', 'DESC')
       .addOrderBy('tx.id', 'DESC')
       .offset((dto.page - 1) * dto.limit)
       .limit(dto.limit)

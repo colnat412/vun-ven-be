@@ -100,20 +100,22 @@ dateText giữ nguyên ngày đọc được trên ảnh để người dùng ki
           : undefined;
       const status = Number(details.status ?? details.statusCode ?? responseStatus);
       const name = error instanceof Error ? error.name : '';
+      const timedOut =
+        status === 408 ||
+        status === 504 ||
+        ['TimeoutError', 'RequestTimeoutError', 'APIConnectionTimeoutError', 'AbortError'].includes(
+          name,
+        );
       // Never log prompts, keys, SDK response bodies or external error messages.
       this.logger.warn(
-        `Transaction parsing failed; status=${Number.isFinite(status) ? status : 'unknown'}`,
+        `Transaction parsing failed; reason=${timedOut ? 'timeout' : 'provider_or_output_error'}; status=${Number.isFinite(status) ? status : 'unknown'}`,
       );
       if (error instanceof InvalidTransactionDraftError) throw new BadGatewayException();
       if (status === 402)
         throw new HttpException('AI provider payment required.', HttpStatus.PAYMENT_REQUIRED);
       if (status === 429)
         throw new HttpException('AI request limit reached.', HttpStatus.TOO_MANY_REQUESTS);
-      if (
-        status === 408 ||
-        status === 504 ||
-        ['TimeoutError', 'RequestTimeoutError', 'AbortError'].includes(name)
-      ) {
+      if (timedOut) {
         throw new GatewayTimeoutException();
       }
       throw new ServiceUnavailableException();
